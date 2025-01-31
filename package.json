@@ -1,0 +1,12 @@
+{
+  "name": "package-name",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "koa": "^2.15.3",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^13.0.1"
+  }
+}
