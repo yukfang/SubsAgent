@@ -46,8 +46,8 @@ router.get('/:key', async (ctx) => {
         const vmlist = JSON.parse(value) 
         const instances = vmlist.map(i => process.env[i] || process.env[i.replaceAll(".", "_")])
         
-        const data = remarks + "\r\n" + instances + "\r\n" + vmlist
-        // const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
+        // const data = remarks + "\r\n" + instances + "\r\n" + vmlist
+        const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
         ctx.body = data
 
     } else {
