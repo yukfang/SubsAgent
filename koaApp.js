@@ -73,9 +73,6 @@ router.get('/:key', async (ctx) => {
 
 
 async function getIpAddress(ip_addr) {
-    // if(ip_addr === '127.0.0.1' || ip_addr === '::1') {
-    //     ip_addr = '35.185.129.130'
-    // }
     const endpoint      = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip_addr}`;
     const method        = 'GET';
     let param       = { };
