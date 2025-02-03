@@ -6,7 +6,7 @@ const koaApp        = new Koa();
 const router        = new Router();
 koaApp.use(bodyParser())
 koaApp.use(router.routes()).use(router.allowedMethods())
-require('dotenv').config(); // Load env variables from a .env file (optional)
+require('dotenv').config(); 
 
 // logger
 koaApp.use(async (ctx, next) => {
@@ -44,27 +44,22 @@ router.get('/:key', async (ctx) => {
 
     if (value) {
         const remarks = `REMARKS=${key}`
-        const instances = JSON.parse(value).map(i => process.env[i]).join("\r\n");
+        const vmlist = JSON.parse(value) 
+        const instances = vmlist.map(i => process.env[i])
+        
 
-        const data = remarks + "\r\n" + instances
+        const data = remarks + "\r\n" + instances + "\r\n" + vmlist
         // const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
         ctx.body = data
 
     } else {
-        ctx.status = 404;
-        ctx.body = { error: `No matching environment variable found for: ${key}` };
+        ctx.status = 401;
+        ctx.body = { error: `Prohibited: ${key}` };
     }
 });
 
 
 async function init() {
-    const LOCAL_TEST = true
-    /** Generate Folder if not exists */
-    {
-        if (!fs.existsSync(`../order_platform`)){
-            // fs.mkdirSync(`../order_platform`);
-        }
-    }
 }
 
 module.exports = {
