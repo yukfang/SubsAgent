@@ -45,7 +45,7 @@ router.get('/:key', async (ctx) => {
         const myip = (process.env.PLATFORM === 'AZ_WEB_APP') ? ctx.request.headers['x-client-ip'] : ctx.request.ip
         const ipInfo = await getIpAddress(myip);
         ctx.body =  {
-            request: ctx.request.headers,
+            request: (process.env.DEBUG_FLAG === 'true') ? ctx.request.headers : null,
             ipInfo
         }
     } else if (value) {
