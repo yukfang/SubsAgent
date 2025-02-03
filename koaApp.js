@@ -43,7 +43,11 @@ router.get('/:key', async (ctx) => {
 
     if(key.toUpperCase() === 'MYIP') {
         const myip = (process.env.PLATFORM === 'AZ_WEB_APP') ? ctx.request.headers['x-forwarded-for'] : ctx.request.ip
-        ctx.body =  await getIpAddress(myip);
+        const ipInfo = await getIpAddress(myip);
+        ctx.body =  {
+            request: ctx.request.headers,
+            ipInfo
+        }
     } else if (value) {
         const remarks = `REMARKS=${key}`
         const vmlist = JSON.parse(value).map(i => process.env[i] || process.env[i.replaceAll(".", "_")])
