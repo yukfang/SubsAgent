@@ -6,5 +6,7 @@ if(process.env.PLATFORM == 'FAAS') { // Set this ENV in FAAS to make it work
     exports.initializer = init;
 } else { // Local Test
     init();
-    koaApp.listen(PORT); 
+    koaApp.listen(PORT, '0.0.0.0', () => {
+        console.log('Server is listening on IPv4 interfaces Only');
+    }); 
 } 

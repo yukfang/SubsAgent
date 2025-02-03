@@ -1,6 +1,8 @@
 const Koa           = require('koa');
 const bodyParser    = require('koa-bodyparser');
 const Router        = require('koa-router');
+const proxying          = require('./utils/http/proxying');
+
 const koaApp        = new Koa();
 const router        = new Router();
 koaApp.use(bodyParser())
@@ -34,14 +36,15 @@ koaApp.use(async (ctx, next) => {
 
 
 router.get('/:key', async (ctx) => {
-    console.log('GET /:key')
-    console.log(process.env)
-    const key = ctx.params.key.toUpperCase(); 
-    const value = process.env[key];
+    // console.log('GET /:key')
+    // console.log(process.env)
+    const key       = ctx.params.key.toUpperCase(); 
+    const value     = process.env[key];
 
-
-
-    if (value) {
+    if(key.toUpperCase() === 'MYIP') {
+        const myip = ctx.request.ip
+        ctx.body =  await getIpAddress(myip);
+    } else if (value) {
         const remarks = `REMARKS=${key}`
         const vmlist = JSON.parse(value).map(i => process.env[i] || process.env[i.replaceAll(".", "_")])
         const instances = vmlist.join("\r\n")
@@ -55,6 +58,27 @@ router.get('/:key', async (ctx) => {
         ctx.body = { error: `Prohibited: ${key}` };
     }
 });
+
+
+async function getIpAddress(ip_addr) {
+    const endpoint      = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip_addr}`;
+    const method        = 'GET';
+    // let header      = {Cookie: await cookie()}
+    let param       = { };
+    let body        = null;
+    const header    = { 'Content-Type': 'application/json' }; 
+    const response = (await proxying(method, endpoint, header, param, body, true));
+    // console.log(response.data)
+
+    if(response.status == 200 ) {
+        const data = JSON.parse(response.data);
+        return data;
+
+    } else {
+        console.log(`Get IpInfo ${ip_addr} Error !!!`)
+        return null;
+    }
+}
 
 
 async function init() {
