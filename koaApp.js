@@ -41,7 +41,12 @@ router.get('/:key', async (ctx) => {
     const value = process.env[key];
 
     if (value) {
-        ctx.body = value
+        const remarks = `REMARKS=${key}`
+        const instances = value 
+
+        const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
+        ctx.body = data
+
     } else {
         ctx.status = 404;
         ctx.body = { error: `No matching environment variable found for: ${key}` };
