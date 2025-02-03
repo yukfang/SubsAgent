@@ -1,4 +1,3 @@
-const fs            = require('fs');
 const Koa           = require('koa');
 const bodyParser    = require('koa-bodyparser');
 const Router        = require('koa-router');
@@ -37,7 +36,7 @@ koaApp.use(async (ctx, next) => {
 router.get('/:key', async (ctx) => {
     console.log('GET /:key')
     console.log(process.env)
-    const key = ctx.params.key.toUpperCase(); // Convert to uppercase if env variables follow that format
+    const key = ctx.params.key.toUpperCase(); 
     const value = process.env[key];
 
 
@@ -45,9 +44,8 @@ router.get('/:key', async (ctx) => {
     if (value) {
         const remarks = `REMARKS=${key}`
         const vmlist = JSON.parse(value) 
-        const instances = vmlist.map(i => process.env[i])
+        const instances = vmlist.map(i => process.env[i] || process.env[i.replaceAll(".", "_")])
         
-
         const data = remarks + "\r\n" + instances + "\r\n" + vmlist
         // const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
         ctx.body = data
