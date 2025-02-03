@@ -40,11 +40,14 @@ router.get('/:key', async (ctx) => {
     const key = ctx.params.key.toUpperCase(); // Convert to uppercase if env variables follow that format
     const value = process.env[key];
 
+
+
     if (value) {
         const remarks = `REMARKS=${key}`
-        const instances = value 
+        const instances = JSON.parse(value).map(i => process.env[i]).join("\r\n");
 
-        const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
+        const data = remarks + "\r\n" + instances
+        // const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
         ctx.body = data
 
     } else {
