@@ -44,10 +44,18 @@ router.get('/:key', async (ctx) => {
     if(key.toUpperCase() === 'MYIP') {
         const myip = (process.env.PLATFORM === 'AZ_WEB_APP') ? ctx.request.headers['x-client-ip'] : ctx.request.ip
         const ipInfo = await getIpAddress(myip);
-        ctx.body =  {
+        const debugInfo = {
             request: (process.env.DEBUG_FLAG === 'true') ? ctx.request.headers : null,
-            ipInfo
         }
+        const respData = {
+            ipInfo: ipInfo        
+        }
+        if (process.env.DEBUG_FLAG === 'true') {
+            respData.debugInfo = debugInfo
+        }
+
+        ctx.body = JSON.stringify(respData, null, 2);
+        
     } else if (value) {
         const remarks = `REMARKS=${key}`
         const vmlist = JSON.parse(value).map(i => process.env[i] || process.env[i.replaceAll(".", "_")])
