@@ -14,6 +14,7 @@ router.get('/:key', async (ctx) => {
         let data = {
             app_id: process.env.PACSUN_APP_ID,
             app_key: process.env.PACSUN_APP_KEY,
+            access_token: process.env.PACSUN_ACCESS_TOKEN,
             refresh_token:process.env.PACSUN_REFRESH_TOKEN,
             app_secret: process.env.PACSUN_APP_SECRET,
             ts: DateTime.now()
