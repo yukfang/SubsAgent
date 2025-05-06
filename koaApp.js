@@ -2,10 +2,14 @@ const Koa           = require('koa');
 const bodyParser    = require('koa-bodyparser');
 const Router        = require('koa-router');
 const proxying          = require('./utils/http/proxying');
+const ssvmlistRouter  = require('./routes/ssvmlist');
+const ecommRouter   = require('./routes/ecomm');
 
 const koaApp        = new Koa();
 const router        = new Router();
 koaApp.use(bodyParser())
+koaApp.use(ssvmlistRouter.routes()).use(ssvmlistRouter.allowedMethods())
+koaApp.use(ecommRouter.routes()).use(ecommRouter.allowedMethods())
 koaApp.use(router.routes()).use(router.allowedMethods())
 require('dotenv').config(); 
 
@@ -35,41 +39,7 @@ koaApp.use(async (ctx, next) => {
 })
 
 
-router.get('/:key', async (ctx) => {
-    // console.log('GET /:key')
-    // console.log(process.env)
-    const key       = ctx.params.key.toUpperCase(); 
-    const value     = process.env[key];
-
-    if(key.toUpperCase() === 'MYIP') {
-        const myip = (process.env.PLATFORM === 'AZ_WEB_APP') ? ctx.request.headers['x-client-ip'] : ctx.request.ip
-        const ipInfo = await getIpAddress(myip);
-        const debugInfo = {
-            request: (process.env.DEBUG_FLAG === 'true') ? ctx.request.headers : null,
-        }
-        const respData = {
-            ipInfo: ipInfo        
-        }
-        if (process.env.DEBUG_FLAG === 'true') {
-            respData.debugInfo = debugInfo
-        }
-
-        ctx.body = JSON.stringify(respData, null, 2);
-
-    } else if (value) {
-        const remarks = `REMARKS=${key}`
-        const vmlist = JSON.parse(value).map(i => process.env[i] || process.env[i.replaceAll(".", "_")])
-        const instances = vmlist.join("\r\n")
-        
-        // const data = Buffer.from(remarks + "\r\n" + instances) //.toString('base64');
-        const data = Buffer.from(remarks + "\r\n" + instances).toString('base64');
-        ctx.body = data
-
-    } else {
-        ctx.status = 401;
-        ctx.body = { error: `Prohibited: ${key}` };
-    }
-});
+// Original route handler moved to respective route files
 
 
 async function getIpAddress(ip_addr) {
