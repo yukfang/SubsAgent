@@ -39,7 +39,8 @@ async function handleTokenRequest(ctx) {
             }
         } else {
             let cacheData = JSON.parse(cache.toString());
-            if(!cacheData.access_token_expire_in || DateTime.now().toSeconds() - cacheData.access_token_expire_in > 3600 * 24 * 6) {
+            console.log(DateTime.now().toSeconds() - cacheData.access_token_expire_in)
+            if(!cacheData.access_token_expire_in || DateTime.now().toSeconds() + 3600 * 5 > cacheData.access_token_expire_in ) {
                 console.log('cache expired')
                 let newToken = await refreshToken()
                 newToken.refresh_token = "*****"
