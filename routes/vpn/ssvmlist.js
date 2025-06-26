@@ -5,7 +5,7 @@ const delayms = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 router.get('/:key', async (ctx) => {
 
     console.log(`ssvmlist exec`)
-    await delayms(5000);
+    await delayms(1000);
     const key = ctx.params.key.toUpperCase();
     const value = process.env[key];
 
